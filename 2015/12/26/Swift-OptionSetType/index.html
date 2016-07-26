@@ -14,7 +14,7 @@
 <meta property="og:description" content="实现自定义多选类型Objective-C中的枚举多选UIView的一个常用属性是autoresizingMask是一个枚举类型，在设置其值时通常被设置为多个值的组合，例如
 12345678910typedef NS_OPTIONS(NSUInteger, UIViewAutoresizing) &amp;#123;    UIViewAutoresizingNone                 = 0">
 <meta property="og:image" content="https://cloud.githubusercontent.com/assets/1595401/12009254/9de711b6-acab-11e5-81bf-bae4d8ff132d.png">
-<meta property="og:updated_time" content="2016-06-10T10:02:15.000Z">
+<meta property="og:updated_time" content="2016-06-10T10:23:52.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Swift学习笔记－－OptionSetType">
 <meta name="twitter:description" content="实现自定义多选类型Objective-C中的枚举多选UIView的一个常用属性是autoresizingMask是一个枚举类型，在设置其值时通常被设置为多个值的组合，例如
@@ -95,7 +95,7 @@
     <div class="article-entry" itemprop="articleBody">
       
         <h1 id="实现自定义多选类型"><a href="#实现自定义多选类型" class="headerlink" title="实现自定义多选类型"></a>实现自定义多选类型</h1><h2 id="Objective-C中的枚举多选"><a href="#Objective-C中的枚举多选" class="headerlink" title="Objective-C中的枚举多选"></a>Objective-C中的枚举多选</h2><p>UIView的一个常用属性是autoresizingMask是一个枚举类型，在设置其值时通常被设置为多个值的组合，例如</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">typedef NS_OPTIONS(NSUInteger, UIViewAutoresizing) &#123;</span><br><span class="line">    UIViewAutoresizingNone                 = 0,</span><br><span class="line">    UIViewAutoresizingFlexibleLeftMargin   = 1 &lt;&lt; 0,</span><br><span class="line">    UIViewAutoresizingFlexibleWidth        = 1 &lt;&lt; 1,</span><br><span class="line">    UIViewAutoresizingFlexibleRightMargin  = 1 &lt;&lt; 2,</span><br><span class="line">    UIViewAutoresizingFlexibleTopMargin    = 1 &lt;&lt; 3,</span><br><span class="line">    UIViewAutoresizingFlexibleHeight       = 1 &lt;&lt; 4,</span><br><span class="line">    UIViewAutoresizingFlexibleBottomMargin = 1 &lt;&lt; 5</span><br><span class="line">&#125;;</span><br><span class="line">view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;</span><br></pre></td></tr></table></figure>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="built_in">NS_OPTIONS</span>(<span class="built_in">NSUInteger</span>, <span class="built_in">UIViewAutoresizing</span>) &#123;</span><br><span class="line">    <span class="built_in">UIViewAutoresizingNone</span>                 = <span class="number">0</span>,</span><br><span class="line">    <span class="built_in">UIViewAutoresizingFlexibleLeftMargin</span>   = <span class="number">1</span> &lt;&lt; <span class="number">0</span>,</span><br><span class="line">    <span class="built_in">UIViewAutoresizingFlexibleWidth</span>        = <span class="number">1</span> &lt;&lt; <span class="number">1</span>,</span><br><span class="line">    <span class="built_in">UIViewAutoresizingFlexibleRightMargin</span>  = <span class="number">1</span> &lt;&lt; <span class="number">2</span>,</span><br><span class="line">    <span class="built_in">UIViewAutoresizingFlexibleTopMargin</span>    = <span class="number">1</span> &lt;&lt; <span class="number">3</span>,</span><br><span class="line">    <span class="built_in">UIViewAutoresizingFlexibleHeight</span>       = <span class="number">1</span> &lt;&lt; <span class="number">4</span>,</span><br><span class="line">    <span class="built_in">UIViewAutoresizingFlexibleBottomMargin</span> = <span class="number">1</span> &lt;&lt; <span class="number">5</span></span><br><span class="line">&#125;;</span><br><span class="line">view.autoresizingMask = <span class="built_in">UIViewAutoresizingFlexibleWidth</span> | <span class="built_in">UIViewAutoresizingFlexibleHeight</span>;</span><br></pre></td></tr></table></figure>
 <p>OC中的枚举值其实就是整数值，所以可以通过按位与操作来实现多选</p>
 <h2 id="Swift中的多选"><a href="#Swift中的多选" class="headerlink" title="Swift中的多选"></a>Swift中的多选</h2><p>那在swift中该怎么做呢，swift中的enum不再是整数类型，所以是不能再使用按位与操作，看下swift中autoresizingMask是怎么定义和使用的<br><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">struct</span> <span class="title">UIViewAutoresizing</span> : <span class="title">OptionSetType</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">init</span>(rawValue: <span class="type">UInt</span>)   </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">var</span> <span class="type">None</span>: <span class="type">UIViewAutoresizing</span> &#123; <span class="keyword">get</span> &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">var</span> <span class="type">FlexibleLeftMargin</span>: <span class="type">UIViewAutoresizing</span> &#123; <span class="keyword">get</span> &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">var</span> <span class="type">FlexibleWidth</span>: <span class="type">UIViewAutoresizing</span> &#123; <span class="keyword">get</span> &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">var</span> <span class="type">FlexibleRightMargin</span>: <span class="type">UIViewAutoresizing</span> &#123; <span class="keyword">get</span> &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">var</span> <span class="type">FlexibleTopMargin</span>: <span class="type">UIViewAutoresizing</span> &#123; <span class="keyword">get</span> &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">var</span> <span class="type">FlexibleHeight</span>: <span class="type">UIViewAutoresizing</span> &#123; <span class="keyword">get</span> &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">var</span> <span class="type">FlexibleBottomMargin</span>: <span class="type">UIViewAutoresizing</span> &#123; <span class="keyword">get</span> &#125;</span><br><span class="line">&#125;</span><br><span class="line">view.autoresizingMask = [.<span class="type">FlexibleHeight</span>, .<span class="type">FlexibleHeight</span>]</span><br></pre></td></tr></table></figure></p>
 <p>swift中的UIViewAutoresizing不再是enum类型，而是一个遵从了OptionSetType协议的struct，然后所有的可能值被定义为public的readonly的static变量，并且这些可能的值的类型都是UIViewAutoresizing，在使用多个值的时候，把多个可能值放到一个数组中，然后赋值就可以了</p>
@@ -139,11 +139,11 @@
     
 <nav id="article-nav">
   
-    <a href="/2016/06/10/hello-world/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2016/01/30/Swift-Standard-Library-2/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Newer</strong>
       <div class="article-nav-title">
         
-          Hello World
+          Swift Standard Library 2
         
       </div>
     </a>
@@ -177,7 +177,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a></li></ul>
     </div>
   </div>
 
@@ -191,6 +191,14 @@
         
           <li>
             <a href="/2016/06/10/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2016/01/30/Swift-Standard-Library-1/">Swift Standard Library 1</a>
+          </li>
+        
+          <li>
+            <a href="/2016/01/30/Swift-Standard-Library-2/">Swift Standard Library 2</a>
           </li>
         
           <li>

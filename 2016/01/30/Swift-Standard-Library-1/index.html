@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Swift Standard Library 1 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Swift Standard Library 1语法基础和标准库中的协议
+学习一门新的语言, 对其标准库的学习是非常重要的, 对标准库中的组件的熟悉程度差不多决定了使用这门语言编程的效率. 这门语言的设计思想和编程风格也在标准库中体现出来. 对于swift来说也不例外, 标准库中提供了很多基础组件, 都需要我们去学习掌握. 那么问题来了, 面多这个庞大的库, 该怎么入手呢?我的方法是: 分类. 把">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Swift Standard Library 1">
+<meta property="og:url" content="http://yoursite.com/2016/01/30/Swift-Standard-Library-1/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Swift Standard Library 1语法基础和标准库中的协议
+学习一门新的语言, 对其标准库的学习是非常重要的, 对标准库中的组件的熟悉程度差不多决定了使用这门语言编程的效率. 这门语言的设计思想和编程风格也在标准库中体现出来. 对于swift来说也不例外, 标准库中提供了很多基础组件, 都需要我们去学习掌握. 那么问题来了, 面多这个庞大的库, 该怎么入手呢?我的方法是: 分类. 把">
+<meta property="og:image" content="https://cloud.githubusercontent.com/assets/1595401/12699719/d8e2706a-c800-11e5-94e4-f0b7253eb3d5.png">
+<meta property="og:image" content="https://cloud.githubusercontent.com/assets/1595401/12699723/fa2b2fb4-c800-11e5-8bdf-b3d84691c7b2.png">
+<meta property="og:image" content="https://cloud.githubusercontent.com/assets/1595401/12699726/18640a0a-c801-11e5-9963-134b320fd429.png">
+<meta property="og:updated_time" content="2016-06-10T10:38:51.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Swift Standard Library 1">
+<meta name="twitter:description" content="Swift Standard Library 1语法基础和标准库中的协议
+学习一门新的语言, 对其标准库的学习是非常重要的, 对标准库中的组件的熟悉程度差不多决定了使用这门语言编程的效率. 这门语言的设计思想和编程风格也在标准库中体现出来. 对于swift来说也不例外, 标准库中提供了很多基础组件, 都需要我们去学习掌握. 那么问题来了, 面多这个庞大的库, 该怎么入手呢?我的方法是: 分类. 把">
+<meta name="twitter:image" content="https://cloud.githubusercontent.com/assets/1595401/12699719/d8e2706a-c800-11e5-94e4-f0b7253eb3d5.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Swift-Standard-Library-1" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/01/30/Swift-Standard-Library-1/" class="article-date">
+  <time datetime="2016-01-30T12:02:57.000Z" itemprop="datePublished">2016-01-30</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/swift/">swift</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Swift Standard Library 1
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Swift-Standard-Library-1"><a href="#Swift-Standard-Library-1" class="headerlink" title="Swift Standard Library 1"></a>Swift Standard Library 1</h1><p><strong>语法基础和标准库中的协议</strong></p>
+<p>学习一门新的语言, 对其标准库的学习是非常重要的, 对标准库中的组件的熟悉程度差不多决定了使用这门语言编程的效率. 这门语言的设计思想和编程风格也在标准库中体现出来. 对于swift来说也不例外, 标准库中提供了很多基础组件, 都需要我们去学习掌握. 那么问题来了, 面多这个庞大的库, 该怎么入手呢?<br>我的方法是: 分类. 把组件的共同点抽象出来, 这样就能快速的建立知识索引, 学习起来就轻松多了.</p>
+<p>作为对标准库学习的一个总结, 我分上下两篇来对swift标准库做一个概述. 重点是分类介绍标准库中组件, 这里没有对组件实现的分析. 前不久swift已经开源了其源码, 想要知道标准库中的组件是如何实现的, 还可以去源码一探究竟. </p>
+<h2 id="基础语法"><a href="#基础语法" class="headerlink" title="基础语法"></a>基础语法</h2><p>学习标准库的唯一前提是要熟悉语法基础, swift的基础语法可参考这里 <a href="https://developer.apple.com/library/ios/documentation/Swift/Conceptual/Swift_Programming_Language/index.html#" target="_blank" rel="external">The Swift Programming Language</a>, 英文不过关的看这里<a href="http://wiki.jikexueyuan.com/project/swift/" target="_blank" rel="external">The Swift Programming Language 中文版</a>.</p>
+<p>在进入标准库之前,这里我们来对swift语法的几个要点加深下理解</p>
+<h3 id="Protocol"><a href="#Protocol" class="headerlink" title="Protocol"></a>Protocol</h3><p>swift中的protocol可以总结为一下几点:</p>
+<ul>
+<li>类似于其他语言中的接口(interface)</li>
+<li>可以被当做类型(type)来使用?</li>
+<li>可以通过extension来提供默认实现</li>
+</ul>
+<p>举例: AnyObject就是一个协议</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@objc</span> <span class="keyword">public</span> <span class="class"><span class="keyword">protocol</span> <span class="title">AnyObject</span> </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Generic"><a href="#Generic" class="headerlink" title="Generic"></a>Generic</h3><p>泛型(Generic)是swift中一个重要的特性, 有了Generic, 类型也可以被参数化</p>
+<ul>
+<li>泛型函数</li>
+</ul>
+<p>标准库中的swap函数就是一个泛型函数, &lt;&gt;中的T就是泛型参数</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// Exchange the values of `a` and `b`.</span></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">func</span> <span class="title">swap</span>&lt;T&gt;<span class="params">(<span class="keyword">inout</span> a: T, <span class="keyword">inout</span> <span class="number">_</span> b: T)</span></span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>泛型类型</li>
+</ul>
+<p>Array就是一个泛型类型, 泛型参数是Element</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">struct</span> <span class="title">Array</span>&lt;<span class="title">Element</span>&gt; : <span class="title">CollectionType</span>, <span class="title">MutableCollectionType</span>, <span class="title">_DestructorSafeContainer</span> </span>&#123;</span><br><span class="line">    <span class="comment">/// Always zero, which is the index of the first element when non-empty.</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">var</span> startIndex: <span class="type">Int</span> &#123; <span class="keyword">get</span> &#125;</span><br><span class="line">    <span class="comment">/// A "past-the-end" element index; the successor of the last valid</span></span><br><span class="line">    <span class="comment">/// subscript argument.</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">var</span> endIndex: <span class="type">Int</span> &#123; <span class="keyword">get</span> &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">subscript</span> (index: <span class="type">Int</span>) -&gt; <span class="type">Element</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">subscript</span> (subRange: <span class="type">Range</span>&lt;<span class="type">Int</span>&gt;) -&gt; <span class="type">ArraySlice</span>&lt;<span class="type">Element</span>&gt;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>泛型参数可以有类型约束</li>
+</ul>
+<p>Dictionary中Key是泛型参数, 但是必须是confirim Hasable这个协议</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">struct</span> <span class="title">Dictionary</span>&lt;<span class="title">Key</span> : <span class="title">Hashable</span>, <span class="title">Value</span>&gt; : <span class="title">CollectionType</span>, <span class="title">DictionaryLiteralConvertible</span> </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>等价的写法是, 类型约束写在where子句中</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">struct</span> <span class="title">Dictionary</span>&lt;<span class="title">Key</span>, <span class="title">Value</span> <span class="title">where</span> <span class="title">Key</span>: <span class="title">Hashable</span>&gt; : <span class="title">CollectionType</span>, <span class="title">DictionaryLiteralConvertible</span> </span>&#123;</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Typealias"><a href="#Typealias" class="headerlink" title="Typealias"></a>Typealias</h3><p>类型别名, 类似typedef<br>Any就是一个typealias</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// The protocol to which all types implicitly conform.</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">typealias</span> <span class="type">Any</span> = <span class="class"><span class="keyword">protocol</span>&lt;&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="Protocol遇上Generic"><a href="#Protocol遇上Generic" class="headerlink" title="Protocol遇上Generic"></a>Protocol遇上Generic</h3><p>泛型协议? swift中的protocol是不能带有泛型参数的</p>
+<p><img src="https://cloud.githubusercontent.com/assets/1595401/12699719/d8e2706a-c800-11e5-94e4-f0b7253eb3d5.png" alt="image"><br>上面的error说protocol不能有泛型参数, 请使用associated type(关联类型), 这个是什么东西? 其实就是这样</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">protocol</span> <span class="title">Animal</span> </span>&#123;</span><br><span class="line">    <span class="keyword">typealias</span> <span class="type">Food</span></span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">feed</span><span class="params">(food: Food)</span></span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// Kinds of Food</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Grass</span> </span>&#123;&#125;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Worm</span> </span>&#123;&#125;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Cow</span>: <span class="title">Animal</span> </span>&#123;</span><br><span class="line">    <span class="comment">//typealias Food = Grass</span></span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">feed</span><span class="params">(food: Grass)</span></span> &#123; <span class="built_in">print</span>(<span class="string">"moo"</span>) &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Bird</span>: <span class="title">Animal</span> </span>&#123;</span><br><span class="line">    <span class="keyword">typealias</span> <span class="type">Food</span> = <span class="type">Worm</span></span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">feed</span><span class="params">(food: Worm)</span></span> &#123; <span class="built_in">print</span>(<span class="string">"chirp"</span>) &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> cow: <span class="type">Cow</span> = <span class="type">Cow</span>()</span><br><span class="line"><span class="comment">//var cow: Animal = Cow()</span></span><br></pre></td></tr></table></figure>
+<p>这里Animal这个protocol中的Food就是一个关联类型, 这里要注意一点就是如果我把上次代码中最后一行的注释去掉会有问题吗? 协议不是可以当做类型来使用吗? 然而这里并不行<br><img src="https://cloud.githubusercontent.com/assets/1595401/12699723/fa2b2fb4-c800-11e5-8bdf-b3d84691c7b2.png" alt="image"></p>
+<p>error提示说的是凡是带有关联类型的协议只能被当做类型约束使用, 不能当做类型. 这也是为什么在之前提到协议可以当做类型使用时我加上了问号. 至于具体怎么当做类型约束使用, 这里就不再深入了. 接下来我们就正式开始标准库中组件的学习</p>
+<h2 id="Protocols"><a href="#Protocols" class="headerlink" title="Protocols"></a>Protocols</h2><p>Apple把swift称为是protocol-oriented的语言, 可想而知protocol在swift中有多重要了, 标准库中现在有89个protocol, 其中带下划线开始的有36个, Apple建议的不要直接使用带下划线的协议, 所以我们重点放在不带下划线的那些上. 为了概述的完整性, 在分类时有些重要的带下划线的protocol也会被提及.</p>
+<p>对协议的学习, 我们要关注下这个协议都申明了哪些方法, 如果要confirm这个协议的话, 这个方法都必须要提供实现. 还有这个协议还继承自哪些协议或是申明了哪些关联类型</p>
+<blockquote>
+<p>为了便于排版, 在这部分的表格中, 函数和操作符只写了名称(构造方法会带外部参数名称), 具体类型签名等可参考<a href="https://developer.apple.com/library/ios/documentation/General/Reference/SwiftStandardLibraryReference/index.html#" target="_blank" rel="external">Swift Standard Library Reference</a></p>
+</blockquote>
+<h3 id="1-Basic"><a href="#1-Basic" class="headerlink" title="1.Basic"></a>1.Basic</h3><table>
+<thead>
+<tr>
+<th>Protocol Name</th>
+<th>Methods</th>
+<th>Inherited</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><em>Equtable</em></strong></td>
+<td><code>==</code></td>
+</tr>
+<tr>
+<td><strong><em>Comparable</em></strong></td>
+<td><code>&lt;</code></td>
+<td>Equatable</td>
+</tr>
+<tr>
+<td><strong><em>Hashable</em></strong></td>
+<td><code>hashValue</code></td>
+<td>Equatable</td>
+</tr>
+</tbody>
+</table>
+<p>凡是需要验证对象相等性的类型都应该遵从Equtable.<br><br>凡是需要具备比较操作的都应遵从Comparable, 类型只要在遵从Equtable的基础上提供”&lt;”(小于)方法的实现, 标准库通过这两个操作来得出”&gt;” “&gt;=” “&lt;=”的实现.<br><br>凡是需要被当做Set的元素或是作为Dictionary的Key的类型都应遵从Hasable</p>
+<h3 id="2-LiteralConvertible"><a href="#2-LiteralConvertible" class="headerlink" title="2.LiteralConvertible"></a>2.LiteralConvertible</h3><table>
+<thead>
+<tr>
+<th>Protocol Name</th>
+<th>Methods</th>
+<th>Associated Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><em>BooleanLiteralConvertible</em></strong></td>
+<td><code>init(booleanLiteral)</code></td>
+<td>BooleanLiteralType</td>
+</tr>
+<tr>
+<td><strong><em>IntegerLiteralConvertible</em></strong></td>
+<td><code>init(integerLiteral)</code></td>
+<td>IntegerLiteralType</td>
+</tr>
+<tr>
+<td><strong><em>FloatLiteralConvertible</em></strong></td>
+<td><code>init(floatLiteral)</code></td>
+<td>FloatLiteralType</td>
+</tr>
+<tr>
+<td><strong><em>NilLiteralConvertible</em></strong></td>
+<td><code>init(nilLiteral)</code></td>
+<td></td>
+</tr>
+<tr>
+<td><strong><em>StringLiteralConvertible</em></strong></td>
+<td><code>init(stringLiteral)</code></td>
+<td>StringLiteralType</td>
+</tr>
+<tr>
+<td><strong><em>ArrayLiteralConvertible</em></strong></td>
+<td><code>init(arrayLiteral)</code></td>
+<td>Element</td>
+</tr>
+<tr>
+<td><strong><em>DictionaryLiteralConvertible</em></strong></td>
+<td><code>init(dictionaryLiteral)</code></td>
+<td>Key, Value</td>
+</tr>
+<tr>
+<td><strong><em>UnicodeScalarLiteralConvertible</em></strong></td>
+<td><code>init(unicodeScalarLiteral)</code></td>
+<td>UnicodeScalarLiteralType</td>
+</tr>
+<tr>
+<td><strong><em>ExtendedGraphemeClusterLiteralConvertible</em></strong></td>
+<td><code>init(extendedGraphemeClusterLiteral)</code></td>
+<td>ExtendedGraphemeClusterLiteralType</td>
+</tr>
+</tbody>
+</table>
+<p>这些协议可以理解为可以通过这个类型可以通过XX类型转换而来, 来个例子吧</p>
+<p><img src="https://cloud.githubusercontent.com/assets/1595401/12699726/18640a0a-c801-11e5-9963-134b320fd429.png" alt="image"><br>上面代码中有一个Circle类型, 即便它有一个接受Float的构造方法, 但是也不能给一个Circle的对象直接赋值Float类型. 如果想要这样的转换,就需要让Circle遵从FloatLiteralConvertible, 就像下面这样</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Circle</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> radius: <span class="type">Float</span></span><br><span class="line">    <span class="keyword">init</span> (radius: <span class="type">Float</span>) &#123;</span><br><span class="line">        <span class="keyword">self</span>.radius = radius</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">area</span> <span class="params">()</span></span> -&gt; <span class="type">Float</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">3.14</span> * radius * radius</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">extension</span> <span class="title">Circle</span>: <span class="title">FloatLiteralConvertible</span> </span>&#123;</span><br><span class="line">    <span class="keyword">init</span>(floatLiteral value: <span class="type">Float</span>) &#123;</span><br><span class="line">        radius = value</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> myCircle: <span class="type">Circle</span> = <span class="number">5.0</span></span><br><span class="line"><span class="built_in">print</span>(myCircle.area())</span><br></pre></td></tr></table></figure>
+<h3 id="3-Index-Related"><a href="#3-Index-Related" class="headerlink" title="3.Index Related"></a>3.Index Related</h3><table>
+<thead>
+<tr>
+<th>Protocol Name</th>
+<th>Methods</th>
+<th>Inherited</th>
+<th>Associated Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><em>_Incrementable</em></strong></td>
+<td><code>successor()</code><br></td>
+<td>Equatable</td>
+<td></td>
+</tr>
+<tr>
+<td><strong><em>_RandomAccessAmbiguity</em></strong></td>
+<td><code>advancedBy</code><br></td>
+<td></td>
+<td><code>Distance</code></td>
+</tr>
+<tr>
+<td><strong><em>ForwardIndexType</em></strong></td>
+<td><code>advancedBy</code><br><code>advancedBy</code><br><code>distanceTo</code><br></td>
+<td>_Incrementable</td>
+<td><code>Distance</code></td>
+</tr>
+<tr>
+<td><strong><em>BidirectionalIndexType</em></strong></td>
+<td><code>predecessor</code><br><code>advancedBy</code><br><code>advancedBy</code><br></td>
+<td>ForwardIndexType</td>
+<td></td>
+</tr>
+<tr>
+<td><strong><em>ReverseIndexType</em></strong></td>
+<td><code>init(_)</code><br><code>base</code><br></td>
+<td>BidirectionalIndexType</td>
+<td><code>Base</code>, <code>Distance</code></td>
+</tr>
+<tr>
+<td><strong><em>_Strideable</em></strong></td>
+<td><code>distanceTo</code><br><code>advancedBy</code><br></td>
+<td>Comparable, _Strideable</td>
+<td><code>Stride</code></td>
+</tr>
+<tr>
+<td><strong><em>Strideable</em></strong></td>
+<td><code>distanceTo</code><br><code>advancedBy</code><br></td>
+<td>Comparable, _Strideable</td>
+<td><code>Stride</code></td>
+</tr>
+<tr>
+<td><strong><em>RandomAccessIndexType</em></strong></td>
+<td><code>distanceTo</code><br><code>advancedBy</code><br></td>
+<td>BidirectionalIndexType, Strideable, _RandomAccessAmbiguity</td>
+<td></td>
+</tr>
+<tr>
+<td><strong><em>Indexable</em></strong></td>
+<td><code>startIndex</code><br><code>endIndex</code><br><code>subscript(position)</code><br></td>
+<td></td>
+<td><code>Index</code></td>
+</tr>
+<tr>
+<td><strong><em>MutableIndexable</em></strong></td>
+<td><code>startIndex</code><br><code>endIndex</code><br><code>subscript(position)</code><br></td>
+<td></td>
+<td><code>Index</code></td>
+</tr>
+</tbody>
+</table>
+<p>Index这一类的protocol除最后两个外的共同点都申明了位置前后移动的方法, 比如ForwardIndexType可以向前移动, 还可以计算两个ForwardIndexType对象之间的位置, 这些protocol一般是被collection的index类型遵从. 而Indexable和MutableIndexable说明的是遵从的类型是可以通过Index来访问其元素. 下篇文章中提到Collection和Index类型时会说明</p>
+<h3 id="4-Arithmetic"><a href="#4-Arithmetic" class="headerlink" title="4.Arithmetic"></a>4.Arithmetic</h3><table>
+<thead>
+<tr>
+<th>Protocol Name</th>
+<th>Methods</th>
+<th>Inherited </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><em>BitwiseOperationsType</em></strong></td>
+<td><code>&amp;</code>, <code>⎟</code>, <code>^</code>, <code>prefix ~</code><br></td>
+</tr>
+<tr>
+<td><strong><em>IntegerArithmeticType</em></strong></td>
+<td><code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>%</code>, <code>toIntMax</code><br></td>
+<td><code>_IntegerArithmeticType</code><br><code>Comparable</code><br></td>
+</tr>
+<tr>
+<td><strong><em>_IntegerType</em></strong></td>
+<td></td>
+<td><code>IntegerLiteralConvertible</code><br><code>CustomStringConvertible</code><br><code>Hashable</code><br><code>IntegerArithmeticType</code><br><code>BitwiseOperationsType</code><br><code>_Incrementable</code><br></td>
+</tr>
+<tr>
+<td><strong><em>IntegerType</em></strong></td>
+<td></td>
+<td><code>_IntegerType</code><br><code>RandomAccessIndexType</code><br></td>
+</tr>
+<tr>
+<td><strong><em>SignedNumberType</em></strong></td>
+<td><code>prefix -</code>, <code>-</code><br></td>
+<td><code>Comparable</code><br><code>IntegerLiteralConvertible</code><br></td>
+</tr>
+<tr>
+<td><strong><em>SignedIntegerType</em></strong></td>
+<td><code>init(_)</code><br><code>toIntMax</code><br></td>
+<td><code>_SignedIntegerType</code>, <code>IntegerType</code><br></td>
+</tr>
+<tr>
+<td><strong><em>UnsignedIntegerType</em></strong></td>
+<td><code>init(_)</code><br><code>toIntMax</code><br></td>
+<td><code>_DisallowMixedSignArithmetic</code><br><code>IntegerType</code><br></td>
+</tr>
+</tbody>
+</table>
+<p>这类算术protocol申明的都是算术运算相关的方法</p>
+<h3 id="5-Sequence-and-Collection"><a href="#5-Sequence-and-Collection" class="headerlink" title="5.Sequence and Collection"></a>5.Sequence and Collection</h3><table>
+<thead>
+<tr>
+<th>Protocol Name</th>
+<th>Methods</th>
+<th>Inherited</th>
+<th>Associated Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><em>GeneratorType</em></strong></td>
+<td><code>next</code><br></td>
+<td></td>
+<td>Element</td>
+</tr>
+<tr>
+<td><strong><em>SequenceType</em></strong></td>
+<td><code>generate</code><br><code>map&lt;T&gt;</code><br><code>reduce&lt;T&gt;</code><br><code>filter</code><br><code>contains</code><br><code>flatMap&lt;T&gt;</code><br><code>...</code><br></td>
+<td></td>
+<td>Generator, SubSequence</td>
+</tr>
+<tr>
+<td><strong><em>CollectionType</em></strong></td>
+<td><code>subscript(position)</code><br><code>isEmpty</code><br><code>lazy</code><br><code>startIndex</code><br><code>endIndex</code><br><code>flatten</code><br><code>...</code><br></td>
+<td>Indexable, SequenceType</td>
+<td>Generator, SubSequence</td>
+</tr>
+<tr>
+<td><strong><em>AnyCollectionType</em></strong></td>
+<td></td>
+<td>CollectionType</td>
+<td></td>
+</tr>
+<tr>
+<td><strong><em>RangeReplaceableCollectionType</em></strong></td>
+<td><code>replaceRange</code><br><code>appendContentsOf</code><br><code>insertContentsOf</code><br><code>removeRange</code><br><code>...</code><br></td>
+<td>CollectionType</td>
+<td>Element</td>
+</tr>
+<tr>
+<td><strong><em>MutableCollectionType</em></strong></td>
+<td><code>partition</code><br><code>sortInPlace</code><br><code>...</code><br></td>
+<td>MutableIndexable, CollectionType</td>
+<td>SubSequence</td>
+</tr>
+<tr>
+<td><strong><em>LazySequenceType</em></strong></td>
+<td><code>elements</code><br><code>array</code><br><code>flatMap&lt;Intermediate&gt;</code><br><code>map&lt;U&gt;</code><br><code>flatten</code><br><code>...</code><br></td>
+<td>SequenceType</td>
+<td>Elements</td>
+</tr>
+<tr>
+<td><strong><em>LazyCollectionType</em></strong></td>
+<td><code>flatMap&lt;Intermediate&gt;</code><br><code>map&lt;U&gt;</code><br><code>flatten</code><br><code>...</code><br></td>
+<td>CollectionType, LazySequenceType</td>
+<td>Elements</td>
+</tr>
+</tbody>
+</table>
+<p>GeneratorType封装了迭代一个sequence的接口, 其关联类型Element就是对应sequence的元素类型, 唯一申明的方法next就是返回下一个GeneratorType对象<br><br>SequenceType的generate方法返回就是对应的GeneratorType对象, 所有的SequenceType都可以通过for…in来遍历元素<br><br>CollectionType继承SequenceType, 并且其元素还可以通过Index来索引<br><br>带Lazy名字的sequence和collection其元素会在被访问的时候才求值</p>
+<h3 id="6-Misc-其他"><a href="#6-Misc-其他" class="headerlink" title="6.Misc(其他)"></a>6.Misc(其他)</h3><table>
+<thead>
+<tr>
+<th>Protocol Name</th>
+<th>Methods</th>
+<th>Inherited</th>
+<th>Associated Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><em>ErrorType</em></strong></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><strong><em>IntervalType</em></strong></td>
+<td><code>isEmpty</code><br><code>start</code><br><code>end</code><br><code>contains</code><br><code>...</code><br></td>
+<td></td>
+<td>Bound</td>
+</tr>
+<tr>
+<td><strong><em>RawRepresentable</em></strong></td>
+<td><code>init?()</code><br><code>rawValue</code><br></td>
+<td></td>
+<td>RawValue</td>
+</tr>
+<tr>
+<td><strong><em>SetAlgebraType</em></strong></td>
+<td><code>union</code><br><code>intersect</code><br><code>exclusiveOr</code><br><code>...</code><br></td>
+<td>Equatable, ArrayLiteralConvertible</td>
+<td>Element</td>
+</tr>
+<tr>
+<td><strong><em>OptionSetType</em></strong></td>
+<td><code>union</code><br><code>intersect</code><br><code>exclusiveOr</code><br><code>...</code><br></td>
+<td>SetAlgebraType, RawRepresentable</td>
+<td>Element</td>
+</tr>
+<tr>
+<td><strong><em>CustomStringConvertible</em></strong></td>
+<td><code>description</code><br></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><strong><em>CustomDebugStringConvertible</em></strong></td>
+<td><code>debugDescription</code><br></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>我把剩下不好分类的protocol放到一起<br><br>Swift2引入了新的错误处理机制, throw语句中的表达必须遵从ErrorType协议<br><br>IntervalType类型是区间类型, 比如[1…4]就是一种区间类型<br><br>SetAlgebraType申明了集合运算操作函数, OptionSetType是用来在swift中实现OC中类似枚举多选的功能的类型<br><br>两个StringConvertible协议的description返回的string是用在print/debugPrint中作为对象的打印值<br></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/01/30/Swift-Standard-Library-1/" data-id="cip9lmen300046ps6owedx6a6" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/06/10/hello-world/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Hello World
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/01/30/Swift-Standard-Library-2/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Swift Standard Library 2</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/swift/">swift</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2016/06/10/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2016/01/30/Swift-Standard-Library-1/">Swift Standard Library 1</a>
+          </li>
+        
+          <li>
+            <a href="/2016/01/30/Swift-Standard-Library-2/">Swift Standard Library 2</a>
+          </li>
+        
+          <li>
+            <a href="/2015/12/26/Swift-OptionSetType/">Swift学习笔记－－OptionSetType</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
