@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>iOS view 布局详解1 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="##UIKit坐标系统对于一个平面坐标系统, 要清楚它的原点(origin)和延伸方向, iOS中UIKit层和CALayer层的坐标系统是不一样的,
+针对view布局时只需要考虑UIKit的坐标系统就可以了
+##UIView的几何属性我们只考虑view的3个重要的几何属性:
+
+frame 描述的是view在其superview坐标系中的位置和大小(可以理解为在superview圈住view全部内">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS view 布局详解1">
+<meta property="og:url" content="http://yoursite.com/2016/07/26/iOS-view-布局详解1/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="##UIKit坐标系统对于一个平面坐标系统, 要清楚它的原点(origin)和延伸方向, iOS中UIKit层和CALayer层的坐标系统是不一样的,
+针对view布局时只需要考虑UIKit的坐标系统就可以了
+##UIView的几何属性我们只考虑view的3个重要的几何属性:
+
+frame 描述的是view在其superview坐标系中的位置和大小(可以理解为在superview圈住view全部内">
+<meta property="og:image" content="https://cloud.githubusercontent.com/assets/1595401/17134128/836ef4c8-535b-11e6-84ca-75f7ae6c08ba.png">
+<meta property="og:image" content="https://cloud.githubusercontent.com/assets/1595401/17134436/f26a33fa-535c-11e6-80d1-a7346d4d9b53.png">
+<meta property="og:image" content="https://cloud.githubusercontent.com/assets/1595401/17134434/f23f2412-535c-11e6-8486-5a72572e37cb.png">
+<meta property="og:image" content="https://cloud.githubusercontent.com/assets/1595401/17134435/f24257e0-535c-11e6-80f4-d8033a4c5db9.png">
+<meta property="og:updated_time" content="2016-07-26T10:40:58.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS view 布局详解1">
+<meta name="twitter:description" content="##UIKit坐标系统对于一个平面坐标系统, 要清楚它的原点(origin)和延伸方向, iOS中UIKit层和CALayer层的坐标系统是不一样的,
+针对view布局时只需要考虑UIKit的坐标系统就可以了
+##UIView的几何属性我们只考虑view的3个重要的几何属性:
+
+frame 描述的是view在其superview坐标系中的位置和大小(可以理解为在superview圈住view全部内">
+<meta name="twitter:image" content="https://cloud.githubusercontent.com/assets/1595401/17134128/836ef4c8-535b-11e6-84ca-75f7ae6c08ba.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-iOS-view-布局详解1" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/07/26/iOS-view-布局详解1/" class="article-date">
+  <time datetime="2016-07-26T09:50:13.000Z" itemprop="datePublished">2016-07-26</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      iOS view 布局详解1
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>##UIKit坐标系统<br>对于一个平面坐标系统, 要清楚它的原点(origin)和延伸方向, iOS中UIKit层和CALayer层的坐标系统是不一样的,<br><img src="https://cloud.githubusercontent.com/assets/1595401/17134128/836ef4c8-535b-11e6-84ca-75f7ae6c08ba.png" width="340"></p>
+<p>针对view布局时只需要考虑UIKit的坐标系统就可以了</p>
+<p>##UIView的几何属性<br>我们只考虑view的3个重要的几何属性:</p>
+<ul>
+<li>frame 描述的是view在其superview坐标系中的位置和大小(可以理解为在superview圈住view全部内容的最小矩形)</li>
+<li>bounds 描述的是view在其自身坐标系中的位置和大小</li>
+<li>center 是view在其superview坐标系中的中心点</li>
+</ul>
+<p><img src="https://cloud.githubusercontent.com/assets/1595401/17134436/f26a33fa-535c-11e6-80d1-a7346d4d9b53.png" width="270"><br><img src="https://cloud.githubusercontent.com/assets/1595401/17134434/f23f2412-535c-11e6-8486-5a72572e37cb.png" width="280"><br><img src="https://cloud.githubusercontent.com/assets/1595401/17134435/f24257e0-535c-11e6-80f4-d8033a4c5db9.png" width="230"></p>
+<p>从上图我们可以看出这3个属性的值的区别<br>要注意的是,这3个属性值不是相互独立的, 当设置其中一个时可能会影响另一个</p>
+<ul>
+<li>当设置frame属性时, bounds的size会自动调整去匹配新的frame矩形, center也会自动调整为新的frame矩形的中心点</li>
+<li>当设置center属性时, frame的origin会被相应调整</li>
+<li>当设置bounds的size时, frame的size会被自动调整来匹配bounds矩形新的size<br>view还有一个几何属性是transform, 可以通过改变transform来实现view的旋转和拉伸, 这里我们不考虑它</li>
+</ul>
+<p>##iOS中布局view的3种方式:</p>
+<ol>
+<li>直接设置view的几何属性, 最为常见的就是直接设置frame</li>
+<li>在1的基础上为view设置autoresizingMask, 用于描述一个view的superview的大小发生改变时，这个view的布局改如何调整</li>
+<li>Auto Layout, 通过一系列的约束(constraints)来描述view间的布局关系, 系统会通过这些constraints来计算出view的几何属性</li>
+</ol>
+<p>###直接设置view的几何属性<br>这种方式是最直观的, 通过直接对view几何属性值的设定到达期望的布局效果.下图是系统在这种方式下的布局过程</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/07/26/iOS-view-布局详解1/" data-id="cir8ktabe0005yrs6sha78si7" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2016/06/10/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Hello World</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/swift/">swift</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2016/07/26/iOS-view-布局详解1/">iOS view 布局详解1</a>
+          </li>
+        
+          <li>
+            <a href="/2016/06/10/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2016/01/30/Swift-Standard-Library-1/">Swift Standard Library 1</a>
+          </li>
+        
+          <li>
+            <a href="/2016/01/30/Swift-Standard-Library-2/">Swift Standard Library 2</a>
+          </li>
+        
+          <li>
+            <a href="/2015/12/26/Swift-OptionSetType/">Swift学习笔记－－OptionSetType</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
