@@ -86,9 +86,9 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>##UIKit坐标系统<br>对于一个平面坐标系统, 要清楚它的原点(origin)和延伸方向, iOS中UIKit层和CALayer层的坐标系统是不一样的,<br><img src="https://cloud.githubusercontent.com/assets/1595401/17134128/836ef4c8-535b-11e6-84ca-75f7ae6c08ba.png" width="340"></p>
+        <h2 id="UIKit坐标系统"><a href="#UIKit坐标系统" class="headerlink" title="UIKit坐标系统"></a>UIKit坐标系统</h2><p>对于一个平面坐标系统, 要清楚它的原点(origin)和延伸方向, iOS中UIKit层和CALayer层的坐标系统是不一样的,<br><img src="https://cloud.githubusercontent.com/assets/1595401/17134128/836ef4c8-535b-11e6-84ca-75f7ae6c08ba.png" width="340"></p>
 <p>针对view布局时只需要考虑UIKit的坐标系统就可以了</p>
-<p>##UIView的几何属性<br>我们只考虑view的3个重要的几何属性:</p>
+<h2 id="UIView的几何属性"><a href="#UIView的几何属性" class="headerlink" title="UIView的几何属性"></a>UIView的几何属性</h2><p>我们只考虑view的3个重要的几何属性:</p>
 <ul>
 <li>frame 描述的是view在其superview坐标系中的位置和大小(可以理解为在superview圈住view全部内容的最小矩形)</li>
 <li>bounds 描述的是view在其自身坐标系中的位置和大小</li>
@@ -101,13 +101,12 @@
 <li>当设置center属性时, frame的origin会被相应调整</li>
 <li>当设置bounds的size时, frame的size会被自动调整来匹配bounds矩形新的size<br>view还有一个几何属性是transform, 可以通过改变transform来实现view的旋转和拉伸, 这里我们不考虑它</li>
 </ul>
-<p>##iOS中布局view的3种方式:</p>
-<ol>
+<h2 id="iOS中布局view的3种方式"><a href="#iOS中布局view的3种方式" class="headerlink" title="iOS中布局view的3种方式:"></a>iOS中布局view的3种方式:</h2><ol>
 <li>直接设置view的几何属性, 最为常见的就是直接设置frame</li>
 <li>在1的基础上为view设置autoresizingMask, 用于描述一个view的superview的大小发生改变时，这个view的布局改如何调整</li>
 <li>Auto Layout, 通过一系列的约束(constraints)来描述view间的布局关系, 系统会通过这些constraints来计算出view的几何属性</li>
 </ol>
-<p>###直接设置view的几何属性<br>这种方式是最直观的, 通过直接对view几何属性值的设定到达期望的布局效果.下图是系统在这种方式下的布局过程</p>
+<h3 id="直接设置view的几何属性"><a href="#直接设置view的几何属性" class="headerlink" title="直接设置view的几何属性"></a>直接设置view的几何属性</h3><p>这种方式是最直观的, 通过直接对view几何属性值的设定到达期望的布局效果.下图是系统在这种方式下的布局过程</p>
 
       
     </div>
