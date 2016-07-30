@@ -23,7 +23,10 @@ frame 描述的是view在其superview坐标系中的位置和大小(可以理解
 <meta property="og:image" content="https://cloud.githubusercontent.com/assets/1595401/17134436/f26a33fa-535c-11e6-80d1-a7346d4d9b53.png">
 <meta property="og:image" content="https://cloud.githubusercontent.com/assets/1595401/17134434/f23f2412-535c-11e6-8486-5a72572e37cb.png">
 <meta property="og:image" content="https://cloud.githubusercontent.com/assets/1595401/17134435/f24257e0-535c-11e6-80f4-d8033a4c5db9.png">
-<meta property="og:updated_time" content="2016-07-30T02:54:45.000Z">
+<meta property="og:image" content="https://cloud.githubusercontent.com/assets/1595401/17267810/1720d5aa-5646-11e6-8e3a-bc05192e082c.png">
+<meta property="og:image" content="https://cloud.githubusercontent.com/assets/1595401/17267811/1722100a-5646-11e6-87fc-0b1f33d253e1.png">
+<meta property="og:image" content="https://cloud.githubusercontent.com/assets/1595401/17267809/171f5068-5646-11e6-9f84-789763640ea0.png">
+<meta property="og:updated_time" content="2016-07-30T03:24:28.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS view 布局详解1">
 <meta name="twitter:description" content="UIKit坐标系统对于一个平面坐标系统, 要清楚它的原点(origin)和延伸方向, iOS中UIKit层和CALayer层的坐标系统是不一样的,
@@ -123,6 +126,24 @@ frame 描述的是view在其superview坐标系中的位置和大小(可以理解
 <li>Auto Layout, 通过一系列的约束(constraints)来描述view间的布局关系, 系统会通过这些constraints来计算出view的几何属性</li>
 </ol>
 <h3 id="直接设置view的几何属性"><a href="#直接设置view的几何属性" class="headerlink" title="直接设置view的几何属性"></a>直接设置view的几何属性</h3><p>这种方式是最直观的, 通过直接对view几何属性值的设定到达期望的布局效果.下图是系统在这种方式下的布局过程</p>
+<p><img src="https://cloud.githubusercontent.com/assets/1595401/17267810/1720d5aa-5646-11e6-8e3a-bc05192e082c.png" width="300"></p>
+<p>系统是通过view的layoutSubviews方法来实现布局的, 在一个runloop中, 通过在一个view上直接调用setNeedsLayout,或是改变其几何属性(这时setNeedsLayout会被系统自动调用), view被标记为needsLayout, 在这个runloop的后面, 系统会通过layoutSubviews来重新布局, 这种方式下要注意:</p>
+<p><img src="https://cloud.githubusercontent.com/assets/1595401/17267811/1722100a-5646-11e6-87fc-0b1f33d253e1.png" width="300"></p>
+<h3 id="AutoresizingMask"><a href="#AutoresizingMask" class="headerlink" title="AutoresizingMask"></a>AutoresizingMask</h3><p>通过直接设置View几何属性来实现布局的最大缺点就是不能自动适配布局的变化, 比如在我们的工程中有很多情况是一个View的大小由网络回传的数据来决定, 这样一来, 在接收到网络数据时, 我们不仅要设置这个View的大小, 还要调整一个页面内其他的View的布局, 还要重新布局其subviews. 在引入Autolayout之前, AutoresizingMask是唯一可以用来实现自适应布局变化的特性, autoresizingMask是UIView的一个属性, 它是一个枚举类型值, 可以被设置为UIViewAutoresizing类型的一个或多个值的组合</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">@property</span>(<span class="keyword">nonatomic</span>) <span class="built_in">UIViewAutoresizing</span> autoresizingMask</span><br><span class="line">  </span><br><span class="line"><span class="keyword">enum</span> &#123;</span><br><span class="line">   <span class="built_in">UIViewAutoresizingNone</span>                 = <span class="number">0</span>,</span><br><span class="line">   <span class="built_in">UIViewAutoresizingFlexibleLeftMargin</span>   = <span class="number">1</span> &lt;&lt; <span class="number">0</span>,</span><br><span class="line">   <span class="built_in">UIViewAutoresizingFlexibleWidth</span>        = <span class="number">1</span> &lt;&lt; <span class="number">1</span>,</span><br><span class="line">   <span class="built_in">UIViewAutoresizingFlexibleRightMargin</span>  = <span class="number">1</span> &lt;&lt; <span class="number">2</span>,</span><br><span class="line">   <span class="built_in">UIViewAutoresizingFlexibleTopMargin</span>    = <span class="number">1</span> &lt;&lt; <span class="number">3</span>,</span><br><span class="line">   <span class="built_in">UIViewAutoresizingFlexibleHeight</span>       = <span class="number">1</span> &lt;&lt; <span class="number">4</span>,</span><br><span class="line">   <span class="built_in">UIViewAutoresizingFlexibleBottomMargin</span> = <span class="number">1</span> &lt;&lt; <span class="number">5</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">typedef</span> <span class="built_in">NSUInteger</span> <span class="built_in">UIViewAutoresizing</span>;</span><br></pre></td></tr></table></figure>
+<p>通过为view设定autoresizingMask来描述当其superview的大小发生改变时，这个view的布局该如何调整, 当其superview的大小变化时, 系统会根据autoresizingMask的值来自动调整view的布局</p>
+<p><img src="https://cloud.githubusercontent.com/assets/1595401/17267809/171f5068-5646-11e6-9f84-789763640ea0.png" width="300"></p>
+<p>这些值分别代表了</p>
+<ul>
+<li>UIViewAutoresizingNone view的frame不会随superview的改变而改变</li>
+<li>UIViewAutoresizingFlexibleLeftMargin 自动调整view与superview左边的距离保证右边距离不变</li>
+<li>UIViewAutoresizingFlexibleWidth 自动调整view的宽，保证与superView的左右边距不变</li>
+<li>UIViewAutoresizingFlexibleRightMargin 自动调整view与superview右边的距离保证左边距不变</li>
+<li>UIViewAutoresizingFlexibleTopMargin 自动调整view与superview顶部的距离保证底部距离不变</li>
+<li>UIViewAutoresizingFlexibleHeight 自动调整view的高，保证与superView的顶部和底部距离不变</li>
+<li>UIViewAutoresizingFlexibleBottomMargin 自动调整view与superview底部部的距离保证顶部距离不变<br>更多的情况这些值会被组合使用, 比如想要一个view的大小跟随其superView的大小变化而四边的边距不变, 这时我们需要将view的autoresizingMask设置为UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight. </li>
+</ul>
+<p>虽然autoresizingMask可以某种意义上说是实现了自动布局调整, 但其能力很有限; 最大的限制是autoresizingMask描述的变化特征只能限于view和其superview, 如果view之间没有直接的父子关系, autoresizingMask就无能为力了.<br>在2012年, Apple在iOS6 SDK中引入了新的布局机制(Auto Layout), 由于其内容较多, 所以放到下一篇来详细介绍.</p>
 
       
     </div>
