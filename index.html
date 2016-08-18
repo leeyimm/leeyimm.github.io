@@ -53,7 +53,7 @@
         
           <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Zoeken"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
@@ -63,6 +63,111 @@
 </header>
       <div class="outer">
         <section id="main">
+  
+    <article id="post-iOS-view-布局详解2" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/08/18/iOS-view-布局详解2/" class="article-date">
+  <time datetime="2016-08-18T09:50:13.000Z" itemprop="datePublished">2016-08-18</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/08/18/iOS-view-布局详解2/">iOS view 布局详解2</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="新的布局方式"><a href="#新的布局方式" class="headerlink" title="新的布局方式"></a>新的布局方式</h2><p>在布局详解1中我们讨论iOS中通过直接设定View的几何属性的布局方式, 也提到了autoresizingMask特性和其局限性. 现在我们来说说AutoLayout.这是Apple在iOS6开始引入的全新的布局方式.<br>官方文档对AutoLayout的说明:<br>“Auto Layout dynamically calculates the size and position of all the views in your view hierarchy, based on constraints placed on those views. “<br>在AutoLayout中, 我们不再直接设置view的几何属性, 而是通过给View添加约束(constraints), 系统会根据这些约束来计算出view的几何属性并实现布局.</p>
+<p><img src="https://cloud.githubusercontent.com/assets/1595401/17772308/b0e47ad2-657a-11e6-8bba-0ba2bbec888d.png" width="340"></p>
+<p>上图是Apple在WWDC2015 Session 218 中对autolayout系统的整体描述.系统的Layout Engine根据提供的输入(最左边4个)来实现布局效果, 下面我们来分别说明这几个输入</p>
+<h2 id="约束-constraints"><a href="#约束-constraints" class="headerlink" title="约束(constraints)"></a>约束(constraints)</h2><p>在Apple的文档中有提到在autolayout系统中, view的布局是通过一系列的线性等式描述的. 而一个约束就是一个等式. 这其实是autolayout的实现原理, 对于我们来讲, 可以把一个约束理解为描述一个view或是两个view之间的某个布局特性的关系, 说起来太抽象, 看下面的示意图吧</p>
+<p><img src="https://cloud.githubusercontent.com/assets/1595401/17772316/b1188138-657a-11e6-83ea-043345f09ac5.png" width="480"></p>
+<p>一个约束就是一个这样的等式 item1.attribute1 = multiplier ⨉ item2.attribute2 + constant<br>上图蓝色view和红色view下面的等式就是描述它们之间间距为8的约束等式.<br>在iOS系统中, 约束对应的是NSLayoutConstraint这个类,  来看下头文件中定义(为方便讨论, 我省去了注释和跟VFL相关的方法)</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">NSLayoutConstraint</span> : <span class="title">NSObject</span></span></span><br><span class="line">+(instancetype)constraintWithItem:(<span class="keyword">id</span>)view1 attribute:(<span class="built_in">NSLayoutAttribute</span>)attr1 relatedBy:(<span class="built_in">NSLayoutRelation</span>)relation toItem:(nullable <span class="keyword">id</span>)view2 attribute:(<span class="built_in">NSLayoutAttribute</span>)attr2 multiplier:(<span class="built_in">CGFloat</span>)multiplier constant:(<span class="built_in">CGFloat</span>)c;</span><br><span class="line"><span class="keyword">@property</span> <span class="built_in">UILayoutPriority</span> priority;</span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">readonly</span>, <span class="keyword">assign</span>) <span class="keyword">id</span> firstItem;</span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">readonly</span>) <span class="built_in">NSLayoutAttribute</span> firstAttribute;</span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">readonly</span>) <span class="built_in">NSLayoutRelation</span> relation;</span><br><span class="line"><span class="keyword">@property</span> (nullable, <span class="keyword">readonly</span>, <span class="keyword">assign</span>) <span class="keyword">id</span> secondItem;</span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">readonly</span>) <span class="built_in">NSLayoutAttribute</span> secondAttribute;</span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">readonly</span>) <span class="built_in">CGFloat</span> multiplier;</span><br><span class="line"><span class="keyword">@property</span> <span class="built_in">CGFloat</span> constant;</span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+<p>可以看到除了priority(将在后面讨论)外, 之前等式中的每个项都对应NSLayoutConstraint中的一个property. NSLayoutConstraint提供了一个类方法来创建constraint对象.</p>
+<ul>
+<li>firstItem和secondItem是id类型, 这是因为NSLayoutConstraint不仅用于iOS(UIView), 还用于OS X(NSView), 对于iOS开发来说, firstItem和secondItem的类型是UIView.</li>
+<li>firstAttribute和secondAttribute就是之前提到的布局特性, 布局特性都是系统预定义的,有如下几种</li>
+<li></li>
+<li><ul>
+<li>大小特性: Height, Width</li>
+</ul>
+</li>
+<li><ul>
+<li>位置特性: Top, Leading, Trailing, Left, Right, Bottom, CenterX, CenterY, Bottom<br><img src="https://cloud.githubusercontent.com/assets/1595401/17772309/b0e45a02-657a-11e6-821e-8021c1fde54f.png" width="340"></li>
+</ul>
+</li>
+<li><p>NSLayoutConstraint中的relation描述了这个约束的等式关系, 除了相等之外还可以是小于等于和大于等</p>
+</li>
+</ul>
+<p><img src="https://cloud.githubusercontent.com/assets/1595401/17772307/b0e42000-657a-11e6-8287-d1f28b91dbd9.png" width="340"></p>
+<ul>
+<li>multiplier和constant都是CGFloat类型</li>
+</ul>
+<p>对于一个constraint等式, 要注意以下几点</p>
+<ul>
+<li>除了constant之外, 其他的property都是readonly的</li>
+<li>建立约束等式, 规则如下:<br>大小特性和位置特性之间不能建立约束等式<br>只能给大小特性设置constant值<br>水平位置特性和垂直位置特性之间不能建立约束等式<br>Leading, Trailing和Left, Right之间不能建立约束等式</li>
+</ul>
+<p>##优先级(priority)<br>NSLayoutConstraint中唯一一个没有出现在约束等式中的property就是优先级(priority), 它的类型是UILayoutPriority</p>
+<p><img src="https://cloud.githubusercontent.com/assets/1595401/17772312/b0ea6adc-657a-11e6-8f8c-a2945b627908.png" width="340"></p>
+<p>UILayoutPriority等同于float类型(但取值范围是0-1000), 系统预定义了4个不同的优先级. 在autolayout在布局的时候会先满足优先级高的约束, 其次考虑优先级较低的约束. autolayout系统会满足所有优先级是1000的约束,  默认情况下, 通过+ constraintWithItem:attribute:relatedBy:toItem:attribute:multiplier:constant:方法创建的约束的优先级都是1000. 对于其他等级的优先级, autolayout会在满足最高优先级约束后尽力满足.<br>NSLayoutConstraint的priority属性虽然没有被标识为readonly, 但是并不是能随意改变, 当一个约束被添加到view后, 以下两种情况会导致exception</p>
+<ul>
+<li>降低一个原本优先级为1000(UILayoutPriorityRequired)的约束的优先级</li>
+<li>将一个原本优先级较1000低的约束的优先级设置为1000<br>所以动态调整约束的优先级并不是很好的实践</li>
+</ul>
+<h2 id="视图-view"><a href="#视图-view" class="headerlink" title="视图(view)"></a>视图(view)</h2><p>约束描述的是view的布局属性的关系, 但仅仅是把约束创建出来是不够的, 还要把约束添加到合适的view上这个约束才能生效, autolayout要求约束(constraint)被添加到这个约束描述的两个view的公共superview上</p>
+<p>例如下图示意中描述两个带高亮view的约束需要被添加到黄色箭头指定的view上</p>
+<p><img src="https://cloud.githubusercontent.com/assets/1595401/17772310/b0e75d4c-657a-11e6-8718-7863f64403bf.png" height="100"><br><img src="https://cloud.githubusercontent.com/assets/1595401/17772311/b0e7cba6-657a-11e6-88f4-bfdb9dbca4c5.png" height="100"><br><img src="https://cloud.githubusercontent.com/assets/1595401/17772313/b1131680-657a-11e6-975e-7a18911b9ff3.png" height="100"></p>
+<h3 id="添加和移除约束方法"><a href="#添加和移除约束方法" class="headerlink" title="添加和移除约束方法"></a>添加和移除约束方法</h3><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment">//添加约束使用的是UIView的两个方法</span></span><br><span class="line">- (<span class="keyword">void</span>)addConstraint:(<span class="built_in">NSLayoutConstraint</span> *)constraint</span><br><span class="line">- (<span class="keyword">void</span>)addConstraints:(<span class="built_in">NSArray</span>&lt;__kindof <span class="built_in">NSLayoutConstraint</span> *&gt; *)constraints</span><br><span class="line"> <span class="comment">//约束也可以被从view上移除, 被移除的约束将不再参与autolayout布局</span></span><br><span class="line">- (<span class="keyword">void</span>)removeConstraint:(<span class="built_in">NSLayoutConstraint</span> *)constraint</span><br><span class="line">- (<span class="keyword">void</span>)removeConstraints:(<span class="built_in">NSArray</span>&lt;__kindof <span class="built_in">NSLayoutConstraint</span> *&gt; *)constraints</span><br></pre></td></tr></table></figure>
+<p>要注意的是如果将一个view从视图层级上移除(比如调用了removeFromSuperView), 会对之前添加的约束产生什么影响</p>
+<p><img src="https://cloud.githubusercontent.com/assets/1595401/17772314/b1138f5c-657a-11e6-89a8-7a46f50f74c3.png" width="200"></p>
+<p>例如在上图中:</p>
+<ul>
+<li>view1和view2之间有约束A被添加到view1上</li>
+<li>view3和view4之间有约束B被添加到view2上</li>
+<li>view3和view5之间有约束C被添加到view1上</li>
+</ul>
+<p>当对view2发送removeFromSuperView后, 约束A和C会被系统清理掉(约束被从view1上移除, 跟其他对象一样, 如果没到到这个约束对象的强引用, 这个约束对象会被释放), 约束B不受影响, 但是如果约束B是被添加到view1上的话, 对view2发送removeFromSuperView也会导致约束B被清除.</p>
+<p>总结出就是当一个view被从视图层级上移除时, 被添加到这个view子树之外的view上的 ,描述跟被移除view子树相关的约束会被系统清除.</p>
+<h2 id="Intrinsic-Content-Size"><a href="#Intrinsic-Content-Size" class="headerlink" title="Intrinsic Content Size"></a>Intrinsic Content Size</h2><p>autolayout系统接收的另一个输入是view的intrinsic Content Size, 它是UIView方法<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="built_in">CGSize</span>)intrinsicContentSize</span><br></pre></td></tr></table></figure></p>
+<p>返回的结果, Apple文档中对其描述是<br>A size indicating the natural size for the receiving view based on its intrinsic properties.</p>
+<p>可以将其理解为view提供给autolayout系统的显示view自身需要的大小.<br>大小分为宽和高两个维度, 系统中一些UI控件会根据其内容来提供其中的一个或两个值</p>
+<p><img src="https://cloud.githubusercontent.com/assets/1595401/17772315/b1153280-657a-11e6-80e9-5c1fa355ec81.png" width="340"></p>
+<p>如果某个维度没有值提供, 对应的返回值是UIViewNoIntrinsicMetric<br>跟intrinsic Content Size相关的两个概念是Compression-Resistance和Content-Hugging, 其实intrinsicContentSize可以被描述为Compression-Resistance和Content-Hugging两组约束等式:</p>
+<p><img src="https://cloud.githubusercontent.com/assets/1595401/17772317/b118b27a-657a-11e6-9cc5-3e692d8952bd.png" width="340"></p>
+<p>我们一般提及Compression-Resistance和Content-Hugging的时候说的就是这两组约束等式的优先级, Compression-Resistance的默认优先级是750, 而Content-Hugging的默认优先级是250.<br>系统提供了下面的方法来获取和设置相应的优先级</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="built_in">UILayoutPriority</span>)contentCompressionResistancePriorityForAxis:(<span class="built_in">UILayoutConstraintAxis</span>)axis</span><br><span class="line">- (<span class="keyword">void</span>)setContentCompressionResistancePriority:(<span class="built_in">UILayoutPriority</span>)priority forAxis:(<span class="built_in">UILayoutConstraintAxis</span>)axis</span><br><span class="line">- (<span class="built_in">UILayoutPriority</span>)contentHuggingPriorityForAxis:(<span class="built_in">UILayoutConstraintAxis</span>)axis</span><br><span class="line">- (<span class="keyword">void</span>)setContentHuggingPriority:(<span class="built_in">UILayoutPriority</span>)priority forAxis:(<span class="built_in">UILayoutConstraintAxis</span>)axis</span><br></pre></td></tr></table></figure>
+<p>intrinsicContentSize是一个很有用的特性, 后面我们再讨论如何利用这个特性来帮助我们更好的使用autolayout</p>
+<h2 id="使用AutoLayout时遇到问题"><a href="#使用AutoLayout时遇到问题" class="headerlink" title="使用AutoLayout时遇到问题"></a>使用AutoLayout时遇到问题</h2><p>使用autolayout来布局可能会遇到以下几种错误导致布局问题</p>
+<ul>
+<li>Ambiguous Layouts, 我们提供的约束不充分, 如果用autolayout来实现布局的话, 每个view的横向和纵向都需要两个约束(intrinsicContentSize可以认为是约束), 要是我们提供的约束不充分的话, 系统在根据约束布局时view的某个几何特性得不到确定的解, 也就是所说的二义性, 这是系统会使用一个不确定的值来填充. UIView的- (BOOL)hasAmbiguousLayout方法可以在运行时来验证某个view是否存在Ambiguous Layouts</li>
+<li>Unsatisfiable Layouts, 我们的提供的约束不能同时被满足, 比如一个约束说view的宽是10, 另一个约束说宽是8, 两个的优先级又相同的情况下, 就会出现这种情况. 系统会在console里面打印说这两个约束出现了冲突(conflict). 由于系统不能同时满足这两个约束, 所以系统会选取一条约束来break, 就是说不满足这一条了, 这样来给出一个结果. 但至于选取哪一条是不确定的. Unsatisfiable Layouts是比较严重的问题, 不仅我们得不到想要的布局效果,在老的iOS版本还可能会引起APP的crash. 所以遇到这个错误一定要分析解决掉</li>
+<li>Logical Errors. 就是我们的提供的约束等式有逻辑上的错误导致系统的布局结果不是我们期望的那样</li>
+</ul>
+<p>这篇文章中我们对autolayout大致有了清楚的认识, 下篇文章会对autolayout的原理进行深入的讨论, 然后介绍如何使用系统提供的跟autolayout相关的API</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/08/18/iOS-view-布局详解2/" data-id="cis0aiw3v0000sxvy9c18j0n2" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
   
     <article id="post-iOS-view-布局详解1" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
@@ -129,7 +234,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/07/26/iOS-view-布局详解1/" data-id="cir8ktabe0005yrs6sha78si7" class="article-share-link">Delen</a>
+      <a data-url="http://yoursite.com/2016/07/26/iOS-view-布局详解1/" data-id="cir8ktabe0005yrs6sha78si7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -174,7 +279,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/06/10/hello-world/" data-id="cir8ktabc0004yrs6bvfxxzby" class="article-share-link">Delen</a>
+      <a data-url="http://yoursite.com/2016/06/10/hello-world/" data-id="cir8ktabc0004yrs6bvfxxzby" class="article-share-link">Share</a>
       
       
     </footer>
@@ -576,7 +681,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/01/30/Swift-Standard-Library-1/" data-id="cir8ktab60001yrs6qkyxmmr8" class="article-share-link">Delen</a>
+      <a data-url="http://yoursite.com/2016/01/30/Swift-Standard-Library-1/" data-id="cir8ktab60001yrs6qkyxmmr8" class="article-share-link">Share</a>
       
       
     </footer>
@@ -933,7 +1038,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/01/30/Swift-Standard-Library-2/" data-id="cir8ktabb0003yrs65g437eef" class="article-share-link">Delen</a>
+      <a data-url="http://yoursite.com/2016/01/30/Swift-Standard-Library-2/" data-id="cir8ktabb0003yrs65g437eef" class="article-share-link">Share</a>
       
       
     </footer>
@@ -1005,7 +1110,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/12/26/Swift-OptionSetType/" data-id="cir8ktab20000yrs6ocew0e9r" class="article-share-link">Delen</a>
+      <a data-url="http://yoursite.com/2015/12/26/Swift-OptionSetType/" data-id="cir8ktab20000yrs6ocew0e9r" class="article-share-link">Share</a>
       
       
     </footer>
@@ -1022,7 +1127,7 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Categorieën</h3>
+    <h3 class="widget-title">Categories</h3>
     <div class="widget">
       <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/swift/">swift</a></li></ul>
     </div>
@@ -1037,9 +1142,9 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Archieven</h3>
+    <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">August 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a></li></ul>
     </div>
   </div>
 
@@ -1047,9 +1152,13 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Recente berichten</h3>
+    <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2016/08/18/iOS-view-布局详解2/">iOS view 布局详解2</a>
+          </li>
         
           <li>
             <a href="/2016/07/26/iOS-view-布局详解1/">iOS view 布局详解1</a>
@@ -1065,10 +1174,6 @@
         
           <li>
             <a href="/2016/01/30/Swift-Standard-Library-2/">Swift Standard Library 2</a>
-          </li>
-        
-          <li>
-            <a href="/2015/12/26/Swift-OptionSetType/">Swift学习笔记－－OptionSetType</a>
           </li>
         
       </ul>
