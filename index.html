@@ -53,7 +53,7 @@
         
           <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Søk"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
@@ -63,6 +63,96 @@
 </header>
       <div class="outer">
         <section id="main">
+  
+    <article id="post-iOS-view-布局详解3" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/09/11/iOS-view-布局详解3/" class="article-date">
+  <time datetime="2016-09-11T09:50:13.000Z" itemprop="datePublished">2016-09-11</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/09/11/iOS-view-布局详解3/">iOS view 布局详解3</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="AutoLayout-API"><a href="#AutoLayout-API" class="headerlink" title="AutoLayout API"></a>AutoLayout API</h2><p>要想用好autolayout, 知道创建和使用约束是不够的, 还要熟悉和合理使用iOS系统提供的跟autolayout相关的API. </p>
+<p><img src="https://cloud.githubusercontent.com/assets/1595401/18416326/bb4f4656-7843-11e6-923d-b9559154c136.png" width="480"></p>
+<p>上面的这些方法有些是需要我们重载, 有些是直接调用的, 想要合理正确运用这些方法, 需要理解autolayout的工作原理和布局流程, </p>
+<h2 id="布局流程"><a href="#布局流程" class="headerlink" title="布局流程"></a>布局流程</h2><p>在本系列文章的第一篇中, 我们提到了没有引入autolayout之前, view通过直接设置几何属性来布局的布局流程, 在引入autolayout后, 在原有的流程中加入了约束更新</p>
+<p><img src="https://cloud.githubusercontent.com/assets/1595401/18416327/bb52a710-7843-11e6-8442-d8a6d27548a5.png" width="480"></p>
+<p>从约束被更新到view被显示到屏幕上经历了上图中从左到右3个周期</p>
+<ul>
+<li>自下而上(先子view再父view)的约束更新周期, 这个周期相关的方法标注为红色</li>
+<li>自上而下(先父view再子view)的布局周期, 这个周期相关的方法标注为黄色</li>
+<li>自上而下的绘制周期, 这个周期相关的方法标注为蓝色</li>
+</ul>
+<p><img src="https://cloud.githubusercontent.com/assets/1595401/18416324/bb4e6d76-7843-11e6-8d9c-5d8451c4bf3a.png" width="480"></p>
+<p>每个周期可以通过调用对应的方法来触发(Trigger), 系统会在每个周期调用相应的方法, 我们可以重载(Override)这些方法来实现自定义的布局逻辑, 后面会提到使用这些方法的注意事项</p>
+<p>跟老的方式一样, 布局流程是一个和系统runloop配合循环往复的过程</p>
+<p><img src="https://cloud.githubusercontent.com/assets/1595401/18416323/bb4c994c-7843-11e6-861e-c0b568901e99.png" width="480"></p>
+<h3 id="Constraints-Change"><a href="#Constraints-Change" class="headerlink" title="Constraints Change"></a>Constraints Change</h3><p>系统会在每个runloop都去检查布局系统中的约束表达式是否发生了变化, Apple提到一下几点会引起布局约束表达式变化</p>
+<ul>
+<li>某个约束被Activating或是被Deactivating(iOS8及以后)</li>
+<li>改变某个约束的constant或priority</li>
+<li>添加或是移除view</li>
+</ul>
+<p>如果约束表达式发生了变化, autolayout系统会根据新的表达式计算出view新的几何属性(这时并没有根据新的值来布局view),  得到新的几何属性的view将调用其superview的setNeedsLayout方法(这样在接下来的布局周期时系统根据新的几何属性来布局这个view)</p>
+<h3 id="Deferred-Layout-Pass"><a href="#Deferred-Layout-Pass" class="headerlink" title="Deferred Layout Pass"></a>Deferred Layout Pass</h3><p>这个阶段包含了下面两个周期</p>
+<p><img src="https://cloud.githubusercontent.com/assets/1595401/18416325/bb4eeb52-7843-11e6-80d9-f22d30e888af.png" width="480"></p>
+<ul>
+<li>Update constraints<br>  之前提到过, 这个周期通过调用-setNeedsUpdateConstraints来触发, 系统会调用-updateConstraints这个方法, 我们可以重载这个方法来做一些更新约束相关的事情, 但在重载时要注意以下几点<ul>
+<li>不要在这个方法里面做会让约束失效的事, 比如移除约束或是移除view</li>
+<li>不要在这个方法里面调用跟Layout和Display周期相关的方法</li>
+<li>一定要在方法的最后调用 [super updateConstraints]</li>
+</ul>
+</li>
+<li>Layout<br>  这个周期通过调用-setNeedsLayout来触发, 系统会调用-layoutSubviews这个方法, 我们可以重载这个方法来直接设置子view几何属性, 建议只在用来完成不能通过约束来实现的布局效果时重载, 注意以下几点<ul>
+<li>不要忘记调用[super layoutSubviews]</li>
+<li>不要改变任何不在这个view子树里面的view的几何属性</li>
+<li>不要调用-setNeedsUpdateConstraints</li>
+<li>不要在这里修改布局约束<br>+<br>上面提到的-setNeedsUpdateConstraints和-setNeedsLayout都相当于是设置一个标志位, 然后系统会在后面的某个时候来更新约束或是布局view. 但是有时我们需要立马得到结果, 所以系统还提供了两个方法</li>
+</ul>
+</li>
+<li>-updateConstraintsIfNeeded: 对view调用这个方法会使其立即完成Update constraints这个周期,</li>
+<li>-layoutIfNeeded:对view调用这个方法会使其立即完成布局, 可以使用这个方法在autolayout中实现view几何相关的动画效果</li>
+</ul>
+<h2 id="VC上的跟布局相关的API"><a href="#VC上的跟布局相关的API" class="headerlink" title="VC上的跟布局相关的API"></a>VC上的跟布局相关的API</h2><p>ViewController上有如下跟布局相关的方法</p>
+<ul>
+<li>-updateViewConstraints  这个方法会在这个VC的根View的约束需要更新时被系统调用, 实际系统是在这个方法的最后调用了根view的-updateConstraints. 我们可以重载这个函数, 在这里可以给根view和其子view添加布局约束, 重载时要注意的是一定要调用[super updateViewConstraints]</li>
+<li>-viewWillLayoutSubviews 这个方法会在这个VC的根View的-layoutSubviews被调用的前一刻被系统调用</li>
+<li>-viewDidLayoutSubviews 这个方法会在这个VC的根View的-layoutSubviews返回后被系统立即调用, 这时只能保证根view的第一层子view的布局已经完成</li>
+</ul>
+<h2 id="在哪里建立约束"><a href="#在哪里建立约束" class="headerlink" title="在哪里建立约束?"></a>在哪里建立约束?</h2><p>到底该在哪里建立约束才合适呢? 其实这是一个非常重要的问题, 虽然系统并没有强制要求. 但是不把约束的位置不合适, 很可能会导致得不到期望的布局效果, 也增加了后期维护代码的难度.</p>
+<p>下面两个位置是建立约束的极佳选择:</p>
+<ul>
+<li>VC的viewDidLoad, 在这里可以建立VC根view及其子view间的约束</li>
+<li>自定义view的init方法, 可以建立view和其子view的约束<br>那之前提到的-updateViewConstraints/-updateConstraints呢? 建议是这里只更新约束, 不要建立新的约束 –看看这两个方法的名称</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这里讨论了autolayout的原理和流程, 介绍了系统提供的API和使用注意事项. 下一篇中会实践一下AutoLayout, 然后介绍经常使用的Masonry这个第三方库</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/09/11/iOS-view-布局详解3/" data-id="cisyf8lv70000h4vyvdnh4anu" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
   
     <article id="post-iOS-view-布局详解2" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
@@ -1127,7 +1217,7 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Categories</h3>
+    <h3 class="widget-title">Kategorier</h3>
     <div class="widget">
       <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/swift/">swift</a></li></ul>
     </div>
@@ -1142,9 +1232,9 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
+    <h3 class="widget-title">Arkiv</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">August 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">August 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a></li></ul>
     </div>
   </div>
 
@@ -1152,9 +1242,13 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
+    <h3 class="widget-title">Siste innlegg</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2016/09/11/iOS-view-布局详解3/">iOS view 布局详解3</a>
+          </li>
         
           <li>
             <a href="/2016/08/18/iOS-view-布局详解2/">iOS view 布局详解2</a>
@@ -1170,10 +1264,6 @@
         
           <li>
             <a href="/2016/01/30/Swift-Standard-Library-1/">Swift Standard Library 1</a>
-          </li>
-        
-          <li>
-            <a href="/2016/01/30/Swift-Standard-Library-2/">Swift Standard Library 2</a>
           </li>
         
       </ul>
